@@ -32,7 +32,7 @@ abstract class SourceBase implements ISource
 	
 	protected $m_force_sync = array ();
 	
-	//	protected $m_force_nsync = array ();
+	protected $m_force_nsync = array ();
 	
 
 	public function __construct($cfg)
@@ -142,7 +142,7 @@ abstract class SourceBase implements ISource
 		
 		foreach ( $sources as $tweetId => $tweet ) {
 			if (false !== strpos ( $tweet, $this->m_cfg ['tagNotSync'] )) {
-				unset ( $content [$k] );
+				array_push($this->m_force_nsync, $tweetId);
 			}
 		}
 		
@@ -173,7 +173,7 @@ abstract class SourceBase implements ISource
 		}
 
 		foreach ( $sources as $tweetId => $tweet ) {
-			if ( ! in_array($tweetId , $this->m_force_sync) && preg_match ( $pattern, $tweet )) {
+			if ( ! in_array($tweetId , $this->m_force_sync) && (preg_match ( $pattern, $tweet ) || in_array($tweetId, $this->m_force_nsync))) {
 				unset ( $sources [$tweetId] );
 			}
 		}
